@@ -1,5 +1,4 @@
-# Standard library imports
-# -
+"""Module for the DynamoDB integration test CDK construct."""
 
 # Third party imports
 from aws_cdk import (
@@ -20,6 +19,8 @@ from serverless_integration_testing_with_step_functions.constructs.dynamo_db_str
 
 
 class IntegrationTestDdb(cdk.Construct):
+    """CDK Construct for the DynamoDB integration test."""
+
     def __init__(
         self,
         scope: cdk.Construct,
@@ -33,7 +34,7 @@ class IntegrationTestDdb(cdk.Construct):
         # Create a Lambda Function to upload an image to the bucket
         arrange_act_ddb_audit_log = LambdaFunction(
             scope=self,
-            construct_id=f"ArrangeAndActDdbAudit",
+            construct_id="ArrangeAndActDdbAudit",
             code=lambda_.Code.from_asset("integration_tests/arrange_act_ddb_audit_log"),
             environment={"DDB_TABLE": dynamo_db_streams.table.table_name},
         )
@@ -44,7 +45,7 @@ class IntegrationTestDdb(cdk.Construct):
         # Create a Lambda Function to assert the image metadata and clean up the file
         assert_cleanup_ddb_audit_log = LambdaFunction(
             scope=self,
-            construct_id=f"AssertAndCleanUpDdbAudit",
+            construct_id="AssertAndCleanUpDdbAudit",
             code=lambda_.Code.from_asset(
                 "integration_tests/assert_cleanup_ddb_audit_log"
             ),

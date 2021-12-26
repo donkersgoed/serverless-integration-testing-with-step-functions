@@ -1,3 +1,5 @@
+"""Lambda Function for the Arrange and Act steps of the S3 test."""
+
 # Standard library imports
 import os
 import time
@@ -20,5 +22,5 @@ def event_handler(_event, _context):
     try:
         s3.Bucket(s3_bucket_name).upload_file("example.png", object_key)
         return {"act_success": True, "test_object_key": object_key}
-    except Exception as exc:  # pylint: disable=broad-except
+    except Exception:  # pylint: disable=broad-except
         return {"act_success": False, "error_message": "failed to put object"}

@@ -11,45 +11,6 @@ from typing import Optional
 import boto3
 from botocore.exceptions import ClientError
 
-# Local application/library specific imports
-# -
-
-
-# Example payload
-# {
-#     "Records": [
-#         {
-#             "eventID": "f29b79cca72c0d21942eba17352ed089",
-#             "eventName": "INSERT",
-#             "eventVersion": "1.1",
-#             "eventSource": "aws:dynamodb",
-#             "awsRegion": "eu-west-1",
-#             "dynamodb": {
-#                 "ApproximateCreationDateTime": 1640381675,
-#                 "Keys": {
-#                     "SK": {
-#                         "S": "USER#1"
-#                     },
-#                     "PK": {
-#                         "S": "USER#1"
-#                     }
-#                 },
-#                 "NewImage": {
-#                     "SK": {
-#                         "S": "USER#1"
-#                     },
-#                     "PK": {
-#                         "S": "USER#1"
-#                     }
-#                 },
-#                 "SequenceNumber": "112700000000031026986431",
-#                 "SizeBytes": 32,
-#                 "StreamViewType": "NEW_IMAGE"
-#             },
-#             "eventSourceARN": "arn:aws:dynamodb:eu-west-1:739178438747:table/ServerlessIntegrationTestingWithStepFunctionsStack-DynamoDbStreamsConstructTable157C6B88-CQALKZ11Z4NY/stream/2021-12-24T21:26:23.287"
-#         }
-#     ]
-# }
 
 logs_client = boto3.client("logs")
 log_group_name = os.environ.get("AUDIT_LOG_GROUP_NAME")

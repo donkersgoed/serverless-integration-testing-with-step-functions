@@ -1,5 +1,4 @@
-# Standard library imports
-import time
+"""Module for the S3 integration test CDK construct."""
 
 # Third party imports
 from aws_cdk import (
@@ -16,12 +15,11 @@ from serverless_integration_testing_with_step_functions.constructs.lambda_functi
 from serverless_integration_testing_with_step_functions.constructs.s3_event_notifications import (
     S3EventNotification,
 )
-from serverless_integration_testing_with_step_functions.constructs.dynamo_db_streams import (
-    DynamoDbStreams,
-)
 
 
 class IntegrationTestS3(cdk.Construct):
+    """CDK Construct for the S3 integration test."""
+
     def __init__(
         self,
         scope: cdk.Construct,
@@ -35,7 +33,7 @@ class IntegrationTestS3(cdk.Construct):
         # Create a Lambda Function to upload an image to the bucket
         arrange_act_s3_upload = LambdaFunction(
             scope=self,
-            construct_id=f"ArrangeAndActS3UploadFunction",
+            construct_id="ArrangeAndActS3UploadFunction",
             code=lambda_.Code.from_asset("integration_tests/arrange_act_s3_upload"),
             environment={"S3_BUCKET": s3_event_notification.s3_bucket.bucket_name},
         )
@@ -44,7 +42,7 @@ class IntegrationTestS3(cdk.Construct):
         # Create a Lambda Function to assert the image metadata and clean up the file
         assert_cleanup_s3_upload = LambdaFunction(
             scope=self,
-            construct_id=f"AssertAndCleanUpS3UploadFunction",
+            construct_id="AssertAndCleanUpS3UploadFunction",
             code=lambda_.Code.from_asset("integration_tests/assert_cleanup_s3_upload"),
             environment={"S3_BUCKET": s3_event_notification.s3_bucket.bucket_name},
         )

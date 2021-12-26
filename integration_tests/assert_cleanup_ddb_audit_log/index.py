@@ -1,3 +1,5 @@
+"""Lambda Function for the Assert and Clean Up steps of the DDB test."""
+
 # Standard library imports
 import json
 import os
@@ -16,7 +18,6 @@ ddb_table = boto3.resource("dynamodb").Table(name=ddb_table_name)
 
 def event_handler(event, _context):
     """Assert and Clean Up: verify the metadata and delete the object."""
-    print(json.dumps(event))
     # If the arrange / act step returned an error, bail early
     if not event["arrange_act_payload"]["act_success"]:
         return error_response(event["arrange_act_payload"]["error_message"])
@@ -82,7 +83,7 @@ def error_response(error_message):
 
 
 def clean_up_with_error_response(test_user_pk, test_user_sk, error_message):
-    """Remove the file from S3 and return an error message."""
+    """Remove the file from DDB and return an error message."""
     ddb_table.delete_item(
         Key={
             "PK": test_user_pk,
@@ -93,7 +94,7 @@ def clean_up_with_error_response(test_user_pk, test_user_sk, error_message):
 
 
 def clean_up_with_success_response(test_user_pk, test_user_sk):
-    """Remove the file from S3 and return a success message."""
+    """Remove the file from DDB and return a success message."""
     ddb_table.delete_item(
         Key={
             "PK": test_user_pk,

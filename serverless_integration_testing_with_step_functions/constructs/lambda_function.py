@@ -1,5 +1,5 @@
-# Standard library imports
-# -
+"""Module for the Lambda Function L3 Pattern."""
+
 
 # Third party imports
 from aws_cdk import (
@@ -9,11 +9,10 @@ from aws_cdk import (
     aws_lambda as lambda_,
 )
 
-# Local application/library specific imports
-# -
-
 
 class LambdaFunction(cdk.Construct):
+    """CDK Construct for a Lambda Function and its supporting resources."""
+
     def __init__(
         self,
         scope: cdk.Construct,
@@ -31,7 +30,7 @@ class LambdaFunction(cdk.Construct):
         # Create a role for the Lambda Function
         function_role = iam.Role(
             scope=self,
-            id=f"FunctionRole",
+            id="FunctionRole",
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
         )
 

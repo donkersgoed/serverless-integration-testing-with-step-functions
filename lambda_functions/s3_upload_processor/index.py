@@ -4,46 +4,6 @@ import struct
 import imghdr
 import boto3
 
-# Example payload
-# {
-#     "Records": [
-#         {
-#             "eventVersion": "2.1",
-#             "eventSource": "aws:s3",
-#             "awsRegion": "eu-west-1",
-#             "eventTime": "2021-12-22T20:21:59.618Z",
-#             "eventName": "ObjectCreated:Put",
-#             "userIdentity": {
-#                 "principalId": "redacted"
-#             },
-#             "requestParameters": {
-#                 "sourceIPAddress": "1.2.3.4"
-#             },
-#             "responseElements": {
-#                 "x-amz-request-id": "0N7JY9NKNQPJ3TW3",
-#                 "x-amz-id-2": "tKKKzyxKwRZt32JLWKTpc9d078tAc2tK7bBgafLTSeT+XMpbCth+WRonDC80skSfi340F18GHDnxblZiWUyU3KqwLs0IKhFd"
-#             },
-#             "s3": {
-#                 "s3SchemaVersion": "1.0",
-#                 "configurationId": "N2EzOGNjOGItODVjMy00MTRjLThkNzAtMmE1OGYwZGNjYTE5",
-#                 "bucket": {
-#                     "name": "serverlessintegrationtes-s3eventconstructeventbuc-18iijril97dy2",
-#                     "ownerIdentity": {
-#                         "principalId": "A2VVHKNJJYJF2V"
-#                     },
-#                     "arn": "arn:aws:s3:::serverlessintegrationtes-s3eventconstructeventbuc-18iijril97dy2"
-#                 },
-#                 "object": {
-#                     "key": "Slide35.png",
-#                     "size": 1210955,
-#                     "eTag": "01f44406871a4d8b0d95a06996e105a5",
-#                     "sequencer": "0061C388E7818BB7B2"
-#                 }
-#             }
-#         }
-#     ]
-# }
-
 s3_client = boto3.client("s3")
 
 

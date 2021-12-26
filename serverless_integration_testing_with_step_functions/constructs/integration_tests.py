@@ -1,3 +1,5 @@
+"""Module for the Integration Test infrastructure."""
+
 # Standard library imports
 import time
 
@@ -28,6 +30,8 @@ from serverless_integration_testing_with_step_functions.constructs.integration_t
 
 
 class IntegrationTests(cdk.Construct):
+    """The supporting infrastructure for the integration tests, eg. the State Machine."""
+
     def __init__(
         self,
         scope: cdk.Construct,

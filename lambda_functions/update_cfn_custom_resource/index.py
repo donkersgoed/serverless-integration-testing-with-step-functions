@@ -8,6 +8,8 @@ http = urllib3.PoolManager()
 
 @dataclass
 class CfnProperties:
+    """Dataclass to carry CFN Custom Resource event properties."""
+
     cfn_url: str
     cfn_stack_id: str
     cfn_request_id: str
@@ -65,6 +67,7 @@ def event_handler(event, _context):
 
 
 def error_response(msg: str, cfn_props: CfnProperties) -> None:
+    """Report an error to CloudFormation."""
     print(f"Reporting error: {msg}")
     call_cloudformation(
         {
@@ -80,6 +83,7 @@ def error_response(msg: str, cfn_props: CfnProperties) -> None:
 
 
 def success_response(cfn_props: CfnProperties) -> None:
+    """Report success to CloudFormation."""
     print("Reporting success")
     call_cloudformation(
         {
@@ -94,6 +98,7 @@ def success_response(cfn_props: CfnProperties) -> None:
 
 
 def call_cloudformation(body: dict, cfn_url: str) -> None:
+    """Use urllib3 to perform a CFN Custom Resource callback."""
     http.request(
         "PUT",
         cfn_url,

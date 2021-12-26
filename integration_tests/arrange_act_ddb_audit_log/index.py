@@ -1,3 +1,5 @@
+"""Lambda Function for the Arrange and Act steps of the DDB test."""
+
 # Standard library imports
 import os
 import time
@@ -20,5 +22,5 @@ def event_handler(_event, _context):
     try:
         ddb_table.put_item(Item=user_object)
         return {"act_success": True, "test_user_key": user_object}
-    except Exception as exc:  # pylint: disable=broad-except
+    except Exception:  # pylint: disable=broad-except
         return {"act_success": False, "error_message": "failed to write to DDB"}

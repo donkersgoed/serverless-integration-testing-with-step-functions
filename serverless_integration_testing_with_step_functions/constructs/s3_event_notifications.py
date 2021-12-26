@@ -1,13 +1,10 @@
-# Standard library imports
-# -
+"""Resources for the S3 Event Notification demo."""
 
 # Third party imports
 from aws_cdk import (
     core as cdk,
-    aws_iam as iam,
     aws_s3 as s3,
     aws_s3_notifications as s3n,
-    aws_logs as logs,
     aws_lambda as lambda_,
 )
 
@@ -18,6 +15,8 @@ from serverless_integration_testing_with_step_functions.constructs.lambda_functi
 
 
 class S3EventNotification(cdk.Construct):
+    """CDK Construct for the S3 Event Notification demo."""
+
     def __init__(
         self,
         scope: cdk.Construct,
@@ -30,7 +29,7 @@ class S3EventNotification(cdk.Construct):
         # Create a Lambda Function to process image uploads
         upload_processor = LambdaFunction(
             scope=self,
-            construct_id=f"UploadProcessor",
+            construct_id="UploadProcessor",
             code=lambda_.Code.from_asset("lambda_functions/s3_upload_processor"),
         )
 

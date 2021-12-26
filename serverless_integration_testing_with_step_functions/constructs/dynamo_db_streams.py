@@ -1,3 +1,5 @@
+"""Module for the DynamoDB Streams L3 Pattern."""
+
 # Standard library imports
 import json
 
@@ -16,6 +18,8 @@ from serverless_integration_testing_with_step_functions.constructs.lambda_functi
 
 
 class DynamoDbStreams(cdk.Construct):
+    """CDK Construct for the DDB Audit Log demo."""
+
     def __init__(
         self,
         scope: cdk.Construct,

@@ -1,3 +1,5 @@
+"""Lambda Function for the Assert and Clean Up steps of the DDB test."""
+
 # Standard library imports
 import os
 
