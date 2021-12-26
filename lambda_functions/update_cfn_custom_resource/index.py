@@ -65,7 +65,7 @@ def event_handler(event, _context):
 
 
 def error_response(msg: str, cfn_props: CfnProperties) -> None:
-    print(f"Reporting error {msg}")
+    print(f"Reporting error: {msg}")
     call_cloudformation(
         {
             "Status": "FAILED",

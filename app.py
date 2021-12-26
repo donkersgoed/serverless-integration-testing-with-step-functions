@@ -4,7 +4,7 @@
 # Standard library imports
 # -
 
-# Related third party imports
+# Third party imports
 # -
 
 # Local application/library specific imports

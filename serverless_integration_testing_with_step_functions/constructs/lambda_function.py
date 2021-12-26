@@ -1,7 +1,7 @@
 # Standard library imports
 # -
 
-# Related third party imports
+# Third party imports
 from aws_cdk import (
     core as cdk,
     aws_iam as iam,

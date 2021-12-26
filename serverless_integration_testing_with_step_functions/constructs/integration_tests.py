@@ -1,7 +1,7 @@
 # Standard library imports
 import time
 
-# Related third party imports
+# Third party imports
 from aws_cdk import (
     core as cdk,
     aws_lambda as lambda_,
@@ -16,6 +16,15 @@ from serverless_integration_testing_with_step_functions.constructs.lambda_functi
 from serverless_integration_testing_with_step_functions.constructs.s3_event_notifications import (
     S3EventNotification,
 )
+from serverless_integration_testing_with_step_functions.constructs.dynamo_db_streams import (
+    DynamoDbStreams,
+)
+from serverless_integration_testing_with_step_functions.constructs.integration_test_s3 import (
+    IntegrationTestS3,
+)
+from serverless_integration_testing_with_step_functions.constructs.integration_test_ddb import (
+    IntegrationTestDdb,
+)
 
 
 class IntegrationTests(cdk.Construct):
@@ -24,56 +33,11 @@ class IntegrationTests(cdk.Construct):
         scope: cdk.Construct,
         construct_id: str,
         s3_event_notification: S3EventNotification,
+        dynamo_db_streams: DynamoDbStreams,
         **kwargs,
     ) -> None:
         """Construct a new IntegrationTests."""
         super().__init__(scope, construct_id, **kwargs)
-
-        # Create a Lambda Function to upload an image to the bucket
-        arrange_act_s3_upload = LambdaFunction(
-            scope=self,
-            construct_id=f"ArrangeAndActS3UploadFunction",
-            code=lambda_.Code.from_asset("integration_tests/arrange_act_s3_upload"),
-            environment={"S3_BUCKET": s3_event_notification.s3_bucket.bucket_name},
-        )
-        s3_event_notification.s3_bucket.grant_read_write(arrange_act_s3_upload.function)
-
-        # Create a Lambda Function to assert the image metadata and clean up the file
-        assert_cleanup_s3_upload = LambdaFunction(
-            scope=self,
-            construct_id=f"AssertAndCleanUpS3UploadFunction",
-            code=lambda_.Code.from_asset("integration_tests/assert_cleanup_s3_upload"),
-            environment={"S3_BUCKET": s3_event_notification.s3_bucket.bucket_name},
-        )
-        s3_event_notification.s3_bucket.grant_read_write(
-            assert_cleanup_s3_upload.function
-        )
-
-        # The State Machine step to execute Arrange & Act
-        arrange_step = sfn_tasks.LambdaInvoke(
-            scope=self,
-            id="Arrange & Act",
-            lambda_function=arrange_act_s3_upload.function,
-        )
-
-        # Wait two seconds for the metadata to be written
-        sleep_step = sfn.Wait(
-            scope=self,
-            id="Wait two seconds",
-            time=sfn.WaitTime.duration(cdk.Duration.seconds(2)),
-        )
-
-        # The State Machine step to execute Assert & Clean Up
-        assert_step = sfn_tasks.LambdaInvoke(
-            scope=self,
-            id="Assert & Clean Up",
-            lambda_function=assert_cleanup_s3_upload.function,
-            payload=sfn.TaskInput.from_object(
-                {
-                    "arrange_act_payload": sfn.JsonPath.string_at("$.Payload"),
-                }
-            ),
-        )
 
         # Lambda Function to call back to CloudFormation
         update_cfn_lambda = LambdaFunction(
@@ -100,11 +64,24 @@ class IntegrationTests(cdk.Construct):
             ),
         )
 
+        integration_test_s3 = IntegrationTestS3(
+            scope=self,
+            construct_id="TestS3",
+            s3_event_notification=s3_event_notification,
+        )
+
+        integration_test_ddb = IntegrationTestDdb(
+            scope=self,
+            construct_id="TestDdb",
+            dynamo_db_streams=dynamo_db_streams,
+        )
+
         # Parallel step to contain the tests and catch errors
         parallel = sfn.Parallel(
             scope=self, id="Parallel Container", output_path="$[*].Payload"
         )
-        parallel.branch(arrange_step.next(sleep_step).next(assert_step))
+        parallel.branch(integration_test_s3.steps)
+        parallel.branch(integration_test_ddb.steps)
         parallel.add_catch(handler=update_cfn_step, errors=["States.ALL"])
 
         state_machine = sfn.StateMachine(

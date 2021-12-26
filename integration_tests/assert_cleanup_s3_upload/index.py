@@ -1,7 +1,7 @@
 # Standard library imports
 import os
 
-# Related third party imports
+# Third party imports
 import boto3
 
 
